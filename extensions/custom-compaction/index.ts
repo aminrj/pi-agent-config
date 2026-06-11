@@ -2,9 +2,8 @@
  * Custom Compaction Extension
  *
  * Replaces default compaction with a full summary of the entire context.
- * Falls back to default if no Gemini Flash model is configured.
- *
- * Requires: google/gemini-2.5-flash model in models.json
+ * Uses the local fast model (qwen2.5-coder-7b) for summarization.
+ * Falls back to default if the model is not available.
  */
 
 import { complete } from "@earendil-works/pi-ai";
@@ -18,10 +17,10 @@ export default function (pi: ExtensionAPI) {
 		const { preparation, branchEntries: _, signal } = event;
 		const { messagesToSummarize, turnPrefixMessages, tokensBefore, firstKeptEntryId, previousSummary } = preparation;
 
-		// Use Gemini Flash for summarization (cheaper/faster)
-		const model = ctx.modelRegistry.find("google", "gemini-2.5-flash");
+		// Use the default loaded model — avoids costly model swap on llama.cpp
+		const model = ctx.modelRegistry.find("llama-cpp", "qwen3.6-35b-a3b");
 		if (!model) {
-			ctx.ui.notify(`Could not find Gemini Flash model, using default compaction`, "warning");
+			ctx.ui.notify(`Could not find qwen3.6-35b-a3b model, using default compaction`, "warning");
 			return;
 		}
 
@@ -29,10 +28,6 @@ export default function (pi: ExtensionAPI) {
 		const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
 		if (!auth.ok) {
 			ctx.ui.notify(`Compaction auth failed: ${auth.error}`, "warning");
-			return;
-		}
-		if (!auth.apiKey) {
-			ctx.ui.notify(`No API key for ${model.provider}, using default compaction`, "warning");
 			return;
 		}
 
