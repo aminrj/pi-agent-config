@@ -1,0 +1,30 @@
+{
+  "defaultProvider": "llama-cpp",
+  "defaultModel": "qwen3.6-35b-a3b",
+  "autoCompaction": true,
+  "compactionThreshold": 0.85,
+  "favorites": [
+    "llama-cpp/qwen3.6-35b-a3b",
+    "llama-cpp/qwen3-coder-30b-q4_k_m.gguf",
+    "llama-cpp/qwen2.5-coder-7b-q4_k_m.gguf",
+    "beellama/qwen3.6-27b-dflash",
+    "anthropic/claude-sonnet-4-6"
+  ],
+  "lastChangelogVersion": "0.79.0",
+  "lsp": {
+    "python": true,
+    "typescript": true
+  },
+  "packages": [
+    "git:github.com/shantanugoel/pi-web-utils",
+    "npm:pi-subagents",
+    "npm:pi-intercom",
+    "git:github.com/prateekmedia/pi-hooks"
+  ],
+  "skills": [
+    "~/.pi/agent/skills",
+    "~/.claude/skills"
+  ],
+  "permissionLevel": "high",
+  "defaultThinkingLevel": "medium"
+}

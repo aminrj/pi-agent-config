@@ -1,0 +1,6 @@
+# Node modules (installed by setup.sh)
+extensions/*/node_modules/
+
+# Package manager artifacts
+npm/
+git/

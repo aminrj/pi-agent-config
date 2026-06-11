@@ -1,0 +1,12 @@
+{
+  "name": "pi-pdf",
+  "version": "1.0.0",
+  "description": "PDF text extraction for pi-coding-agent",
+  "main": "index.js",
+  "pi": {
+    "extensions": ["./index.js"]
+  },
+  "dependencies": {
+    "pdf-parse": "^1.1.1"
+  }
+}
