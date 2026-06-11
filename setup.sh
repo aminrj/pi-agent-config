@@ -47,8 +47,19 @@ symlink_if_needed() {
       ln -sf "$target" "$link"
     fi
   elif [[ -e "$link" ]]; then
-    echo "  ✗ $desc: $link exists but is not a symlink. Skipping."
-    return 1
+    # File exists but is not a symlink — check if content matches
+    if diff -q "$link" "$target" &>/dev/null; then
+      if $DRY_RUN; then
+        echo "  ~ $desc: would replace file with symlink $link → $target"
+      else
+        echo "  ~ $desc: replacing file with symlink $link → $target"
+        rm -f "$link"
+        ln -sf "$target" "$link"
+      fi
+    else
+      echo "  ⚠ $desc: $link exists with different content. Not replacing."
+      return 1
+    fi
   else
     if $DRY_RUN; then
       echo "  ~ $desc: would create symlink $link → $target"
@@ -154,8 +165,10 @@ fi
 
 if [[ -L "$PI_AGENT_DIR/AGENTS.md" ]]; then
   echo "  ✓ AGENTS.md → $(readlink "$PI_AGENT_DIR/AGENTS.md")"
+elif [[ -f "$PI_AGENT_DIR/AGENTS.md" ]]; then
+  echo "  ⚠ AGENTS.md: exists but not symlinked (content matches repo)"
 else
-  echo "  ✗ AGENTS.md: symlink missing"
+  echo "  ✗ AGENTS.md: missing"
   OK=false
 fi
 
